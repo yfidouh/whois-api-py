@@ -9,6 +9,7 @@ class RequestParameters(BaseModel):
     - api_key
     - domain_name
     - output_format
+    - rdap
     - prefer_fresh
     - da
     - ip
@@ -31,6 +32,7 @@ class RequestParameters(BaseModel):
         - api_key - required
         - domain_name
         - output_format
+        - rdap
         - prefer_fresh
         - da
         - ip
@@ -42,6 +44,7 @@ class RequestParameters(BaseModel):
         self._api_key = ''
         self._domain_name = ''
         self._output_format = 'JSON'
+        self._rdap = 0
         self._prefer_fresh = 0
         self._da = 0
         self._ip = 0
@@ -58,6 +61,8 @@ class RequestParameters(BaseModel):
             self.domain_name = kwargs['domain_name']
         if 'output_format' in kwargs:
             self.output_format = kwargs['output_format']
+        if 'rdap' in kwargs:
+            self.rdap = kwargs['rdap']
         if 'prefer_fresh' in kwargs:
             self.prefer_fresh = kwargs['prefer_fresh']
         if 'da' in kwargs:
@@ -108,6 +113,17 @@ class RequestParameters(BaseModel):
         else:
             raise ParameterError(
                 "Output format should either JSON or XML.")
+
+    @property
+    def rdap(self):
+        return self._rdap
+
+    @rdap.setter
+    def rdap(self, value):
+        if int(value) in [0, 1]:
+            self._rdap = int(value)
+        else:
+            raise ParameterError("'rdap' should be 0 or 1.")
 
     @property
     def prefer_fresh(self):
@@ -193,6 +209,7 @@ class RequestParameters(BaseModel):
             'apiKey': self.api_key,
             'domainName': self.domain_name,
             'outputFormat': self.output_format,
+            'rdap': self.rdap,
             'da': self.da,
             'ip': self.ip,
             'ipWhois': self.ip_whois,
