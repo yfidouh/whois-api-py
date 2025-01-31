@@ -49,10 +49,24 @@ class TestClient(unittest.TestCase):
         whois = client.data('whoisxmlapi.com')
         assert whois.domain_availability is None
         assert len(whois.raw_text) > 20
-        params = RequestParameters(ignore_raw_texts=1, da=2)
-        whois2 = client.data('whoisxmlapi.com', params)
-        assert whois2.domain_availability is False
-        assert whois2.raw_text == ''
+
+        test_cases = [
+            {
+                'name': 'ignore_raw_texts and da parameters',
+                'domain': 'whoisxmlapi.com',
+                'params': RequestParameters(ignore_raw_texts=1, da=2),
+                'checks': [
+                    lambda w: w.domain_availability is False,
+                    lambda w: w.raw_text == ''
+                ]
+            },
+        ]
+
+        for case in test_cases:
+            with self.subTest(msg=case['name']):
+                whois = client.data(case['domain'], params=case['params'])
+                for check in case['checks']:
+                    self.assertTrue(check(whois))
 
 
 if __name__ == '__main__':
