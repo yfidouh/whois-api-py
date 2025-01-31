@@ -60,6 +60,15 @@ class TestClient(unittest.TestCase):
                     lambda w: w.raw_text == ''
                 ]
             },
+            {
+                'name': 'rdap parameter',
+                'domain': 'icann.org',
+                'params': RequestParameters(rdap=1),
+                'checks': [
+                    lambda w: w.registrar_name == 'CSC Corporate Domains, Inc.',
+                    lambda w: w.contact_email == 'domainabuse@cscglobal.com'
+                ]
+            },
         ]
 
         for case in test_cases:
